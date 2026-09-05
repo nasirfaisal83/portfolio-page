@@ -1,0 +1,51 @@
+{
+  "name": "faisal-nasir-portfolio",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "prebuild": "ts-node --project tsconfig.scripts.json scripts/content-check.ts && ts-node --project tsconfig.scripts.json scripts/og.ts",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "motion": "12.12.0",
+    "next": "15.3.4",
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.10.2",
+    "@lhci/cli": "0.15.0",
+    "@playwright/test": "1.49.1",
+    "@tailwindcss/postcss": "^4.1.4",
+    "@testing-library/jest-dom": "6.6.3",
+    "@testing-library/react": "16.3.0",
+    "@testing-library/user-event": "14.5.2",
+    "@types/node": "22.13.5",
+    "@types/react": "19.1.0",
+    "@types/react-dom": "19.1.2",
+    "@vitejs/plugin-react": "4.3.4",
+    "autoprefixer": "10.4.21",
+    "bundlesize": "0.18.2",
+    "eslint": "9.23.0",
+    "eslint-config-next": "15.3.4",
+    "jsdom": "26.0.0",
+    "postcss": "8.5.3",
+    "prettier": "3.5.3",
+    "tailwindcss": "4.1.4",
+    "ts-node": "10.9.2",
+    "typescript": "5.8.2",
+    "vitest": "3.1.1"
+  },
+  "bundlesize": [
+    {
+      "path": "./.next/static/chunks/main*.js",
+      "maxSize": "180 kB"
+    }
+  ]
+}

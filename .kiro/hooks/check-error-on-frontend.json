@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "check error on frontend",
+      "trigger": "PostFileSave",
+      "action": {
+        "type": "command",
+        "command": "npx eslint --fix src"
+      },
+      "description": "Lint & fix on save",
+      "matcher": "//.(ts|tsx)$",
+      "enabled": true
+    }
+  ]
+}

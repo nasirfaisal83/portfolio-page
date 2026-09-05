@@ -1,0 +1,67 @@
+/* ============================================================
+   Design tokens — every color, type, space, radius, and motion
+   value used across the site. Consumed via CSS custom properties.
+   ============================================================ */
+
+:root {
+  /* --- Color --- */
+  --vellum: #ECEFF3;          /* page background — cool vellum */
+  --ink: #14202E;             /* text, primary buttons, rules */
+  --graphite: #5B6675;        /* secondary text, captions */
+  --hairline: #D4DAE2;        /* borders, dividers on vellum */
+  --screen: #0F1B2D;          /* screen background — deep navy */
+  --screen-ink: #E6EDF3;      /* text inside screens */
+  --screen-muted: #7A8BA0;    /* idle nodes, edges, grid */
+  --signal: #35D0C8;          /* active node, packet, success — teal phosphor */
+  --signal-deep: #0B6E68;     /* links, focus ring, nav underline — on vellum */
+  --fault: #FF6B6B;           /* failure, compensation — inside screens */
+
+  /* --- Typography --- */
+  /* Roles: name (h1), h2, h3, body, caption, identifier */
+  /* Faces wired in layout.tsx via next/font/google */
+
+  /* --- Space --- */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  24px;
+  --space-6:  32px;
+  --space-7:  48px;
+  --space-8:  64px;
+  --space-9:  96px;
+  --space-10: 128px;
+
+  --content-max: 1120px;
+  --gutter: clamp(20px, 4vw, 48px);
+  --section-padding: clamp(64px, 10vh, 128px);
+
+  /* --- Radius --- */
+  --radius-control: 4px;  /* page controls */
+  --radius-screen: 6px;   /* screens */
+
+  /* --- Motion --- */
+  --t-hover:   120ms ease-out;                           /* color, underline, border */
+  --t-ui:      240ms cubic-bezier(0.16, 1, 0.3, 1);      /* open/close, crossfade */
+  --t-status:  300ms ease-out;                           /* status chip change */
+  --t-packet:  900ms ease-in-out;                        /* default edge traversal */
+  --t-gap:     350ms;                                    /* pause between steps */
+  --t-morph:   600ms cubic-bezier(0.16, 1, 0.3, 1);     /* layout morph */
+
+  /* --- Focus --- */
+  --focus-ring-color: var(--signal-deep);
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+}
+
+/* Reduced motion — collapse motion tokens */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --t-hover:   0ms;
+    --t-ui:      150ms;
+    --t-status:  150ms;
+    --t-packet:  0ms;
+    --t-gap:     0ms;
+    --t-morph:   0ms;
+  }
+}

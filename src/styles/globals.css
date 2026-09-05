@@ -1,0 +1,174 @@
+@import "./tokens.css";
+@import "tailwindcss";
+
+/* ============================================================
+   Tailwind v4 theme — custom tokens available as utilities
+   ============================================================ */
+@theme {
+  --color-vellum: #ECEFF3;
+  --color-ink: #14202E;
+  --color-graphite: #5B6675;
+  --color-hairline: #D4DAE2;
+  --color-screen: #0F1B2D;
+  --color-screen-ink: #E6EDF3;
+  --color-screen-muted: #7A8BA0;
+  --color-signal: #35D0C8;
+  --color-signal-deep: #0B6E68;
+  --color-fault: #FF6B6B;
+
+  --font-family-mono: var(--font-plex-mono), monospace;
+  --font-family-sans: var(--font-plex-sans), sans-serif;
+
+  --max-width-content: 1120px;
+}
+
+/* ============================================================
+   Global styles — type roles, measure, focus, scroll margin
+   ============================================================ */
+
+/* --- Base reset & document --- */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  background-color: var(--vellum);
+  color: var(--ink);
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  font-family: var(--font-plex-sans), system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--ink);
+  background-color: var(--vellum);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* --- Type roles --- */
+
+/* name (h1) */
+.type-name {
+  font-family: var(--font-plex-mono), monospace;
+  font-weight: 400;
+  font-size: clamp(56px, 9vw, 112px);
+  line-height: 1.0;
+  letter-spacing: -0.02em;
+}
+
+/* h2 */
+.type-h2 {
+  font-family: var(--font-plex-mono), monospace;
+  font-weight: 400;
+  font-size: clamp(32px, 4vw, 44px);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+/* h3 */
+.type-h3 {
+  font-family: var(--font-plex-mono), monospace;
+  font-weight: 400;
+  font-size: 28px;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+/* body */
+.type-body {
+  font-family: var(--font-plex-sans), sans-serif;
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+/* body emphasis */
+.type-body-em {
+  font-family: var(--font-plex-sans), sans-serif;
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+/* caption */
+.type-caption {
+  font-family: var(--font-plex-sans), sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* identifier — strings that exist in code: topics, frames, enums, filenames, ports */
+.type-identifier {
+  font-family: var(--font-plex-mono), monospace;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* --- Measure limit --- */
+p, li, .measure {
+  max-width: 70ch;
+}
+
+/* --- Headings inherit type roles by element --- */
+h1 {
+  font-family: var(--font-plex-mono), monospace;
+  font-weight: 400;
+  font-size: clamp(56px, 9vw, 112px);
+  line-height: 1.0;
+  letter-spacing: -0.02em;
+}
+h2 {
+  font-family: var(--font-plex-mono), monospace;
+  font-weight: 400;
+  font-size: clamp(32px, 4vw, 44px);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+h3 {
+  font-family: var(--font-plex-mono), monospace;
+  font-weight: 400;
+  font-size: 28px;
+  line-height: 1.2;
+}
+
+/* --- Focus ring --- */
+:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  border-radius: var(--radius-control);
+}
+
+/* --- Scroll margin (so sticky nav doesn't cover headings) --- */
+[id] {
+  scroll-margin-top: 80px;
+}
+
+/* --- Links --- */
+a {
+  color: var(--signal-deep);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color var(--t-hover);
+}
+
+a:hover {
+  color: var(--ink);
+}
+
+/* --- Screen-internal identifier color --- */
+.screen-identifier {
+  font-family: var(--font-plex-mono), monospace;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--signal);
+}
