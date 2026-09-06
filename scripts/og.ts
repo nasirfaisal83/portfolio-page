@@ -71,6 +71,7 @@ async function main() {
 
   const pages: { id: string; name: string }[] = [
     { id: "home", name: "Faisal Nasir" },
+    { id: "salon-appointment-system", name: "Salon Appointment System" },
     { id: "order-saga", name: "Order-Saga" },
     { id: "rag-document-qa", name: "rag-document-qa" },
     { id: "tech-news-agent", name: "tech-news-agent" },

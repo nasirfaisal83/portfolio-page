@@ -193,9 +193,12 @@ for (const pg of PAGES) {
         expect(homeLinks.length).toBeGreaterThanOrEqual(1);
       });
 
+      // Private repositories are deliberately not linked (no inaccessible URLs).
       test("case study links to its GitHub repository", async () => {
+        const repoUrl = pg.project!.github;
+        test.skip(!repoUrl, "private repository — no public URL to link");
         const githubHrefs = await page.$$eval(
-          `a[href="${pg.project!.github}"]`,
+          `a[href="${repoUrl}"]`,
           (els) => els.map((el) => (el as HTMLAnchorElement).href)
         );
         expect(githubHrefs.length).toBeGreaterThanOrEqual(1);
@@ -217,9 +220,15 @@ for (const pg of PAGES) {
         expect(ssc).toBeDefined();
         expect(ssc?.name).toBeTruthy();
         expect(ssc?.description).toBeTruthy();
-        expect(ssc?.codeRepository).toBeTruthy();
         expect(ssc?.programmingLanguage).toBeTruthy();
         expect(ssc?.author?.name).toBe(site.name);
+        // codeRepository is present only for public repositories, and must never
+        // be emitted as an inaccessible URL for a private one.
+        if (pg.project!.github) {
+          expect(ssc?.codeRepository).toBe(pg.project!.github);
+        } else {
+          expect(ssc?.codeRepository).toBeUndefined();
+        }
       });
 
       test("case study JSON-LD: BreadcrumbList present", async () => {
@@ -236,12 +245,13 @@ for (const pg of PAGES) {
 // ── Global: sitemap.xml ───────────────────────────────────────────────────────
 
 test.describe("sitemap.xml", () => {
-  test("lists exactly 6 URLs", async ({ request }) => {
+  test("lists the home page plus every project", async ({ request }) => {
     const resp = await request.get(`${BASE}/sitemap.xml`);
     expect(resp.ok()).toBe(true);
     const body = await resp.text();
     const matches = body.match(/<loc>/g) ?? [];
-    expect(matches).toHaveLength(6);
+    // home + one entry per project
+    expect(matches).toHaveLength(1 + projects.length);
   });
 });
 

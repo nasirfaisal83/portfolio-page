@@ -4,6 +4,10 @@ import dynamic from "next/dynamic";
 import type { ScreenId } from "@/content/projects";
 
 const SCREEN_MAP: Record<ScreenId, React.ComponentType> = {
+  salon: dynamic(
+    () => import("@/components/screens/salon/SalonScreen").then((m) => ({ default: m.SalonScreen })),
+    { ssr: false }
+  ),
   "order-saga": dynamic(
     () => import("@/components/screens/order-saga/OrderSagaScreen").then((m) => ({ default: m.OrderSagaScreen })),
     { ssr: false }

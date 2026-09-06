@@ -9,6 +9,12 @@ export const seo = {
   },
   suffix: " | Faisal Nasir",
   projects: {
+    "salon-appointment-system": {
+      title: "Salon Appointment System: Spring Boot and Next.js",
+      description:
+        "A production booking system built solo for a salon: no-account booking with phone verification, stylist approval, and no double-booking enforced by PostgreSQL.",
+      programmingLanguage: ["Java", "TypeScript"],
+    },
     "order-saga": {
       title: "Order-Saga: choreography saga with Spring Boot and Kafka",
       description:

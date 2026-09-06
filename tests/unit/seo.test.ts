@@ -115,6 +115,23 @@ describe("buildProjectJsonLd", () => {
     expect(ssc.programmingLanguage).toBe("Python");
   });
 
+  it("omits codeRepository for a private repository", async () => {
+    const { buildProjectJsonLd } = await import("@/lib/seo");
+    const { projects } = await import("@/content/projects");
+    const project = projects.find((p) => p.slug === "salon-appointment-system")!;
+    const blocks = buildProjectJsonLd("salon-appointment-system", project);
+    const ssc = blocks.find((b: any) => b["@type"] === "SoftwareSourceCode") as any;
+    expect(ssc).toBeDefined();
+    // The repository is private — no inaccessible URL may be emitted.
+    expect(ssc.codeRepository).toBeUndefined();
+    // Everything else is still present.
+    expect(ssc.name).toBe("Salon Appointment System");
+    expect(ssc.description).toBeTruthy();
+    expect(ssc.author.name).toBe("Faisal Nasir");
+    expect(ssc.programmingLanguage).toContain("Java");
+    expect(ssc.programmingLanguage).toContain("TypeScript");
+  });
+
   it("emergency-alert-system has array of programmingLanguages", async () => {
     const { buildProjectJsonLd } = await import("@/lib/seo");
     const { projects } = await import("@/content/projects");

@@ -22,16 +22,17 @@ export function HeroAscii({ opacity }: { opacity: number }) {
         userSelect: "none",
       }}
     >
-{`              rag-document-qa
-                    │
- order-saga ────────┼──────── tech-news-agent
-                    │
-               ┌────┴────┐
-               │portfolio│
-               └────┬────┘
-                    │
- emergency-alert ───┴──── con-detection
-       -system`}
+{`              salon-appointment-system
+                         │
+  con-detection ─┐       │       ┌─ order-saga
+                 └───────┼───────┘
+                    ┌────┴────┐
+                    │portfolio│
+                    └────┬────┘
+                 ┌───────┼───────┐
+  emergency-alert┘       │       └─ rag-document-qa
+       -system           │
+                  tech-news-agent`}
     </pre>
   );
 }

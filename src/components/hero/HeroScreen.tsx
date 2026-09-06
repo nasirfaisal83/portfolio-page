@@ -2,31 +2,35 @@
 
 import { useEffect, useRef, useState } from "react";
 
-// Project nodes for the hero navigation map
+// Project nodes for the hero navigation map.
+// Six projects laid out as a hexagon around the central node, in display order.
 const HERO_NODES = [
-  { id: "rag",       label: "rag-document-qa",       x: 200, y: 60,  slug: "rag-document-qa" },
-  { id: "order",     label: "Order-Saga",             x: 60,  y: 200, slug: "order-saga" },
-  { id: "portfolio", label: "portfolio",              x: 200, y: 200, slug: null },
-  { id: "agents",    label: "tech-news-agent",        x: 340, y: 200, slug: "tech-news-agent" },
-  { id: "stomp",     label: "Emergency-Alert-System", x: 80,  y: 340, slug: "emergency-alert-system" },
-  { id: "detection", label: "con-Detection",          x: 330, y: 340, slug: "con-detection" },
+  { id: "portfolio", label: "portfolio",              x: 200, y: 210, slug: null },
+  { id: "salon",     label: "Salon Appointment System", x: 200, y: 70,  slug: "salon-appointment-system" },
+  { id: "order",     label: "Order-Saga",             x: 326, y: 140, slug: "order-saga" },
+  { id: "rag",       label: "rag-document-qa",        x: 326, y: 280, slug: "rag-document-qa" },
+  { id: "agents",    label: "tech-news-agent",        x: 200, y: 350, slug: "tech-news-agent" },
+  { id: "stomp",     label: "Emergency-Alert-System", x: 74,  y: 280, slug: "emergency-alert-system" },
+  { id: "detection", label: "con-Detection",          x: 74,  y: 140, slug: "con-detection" },
 ] as const;
 
 const HERO_EDGES = [
-  { from: "portfolio", to: "rag" },
+  { from: "portfolio", to: "salon" },
   { from: "portfolio", to: "order" },
+  { from: "portfolio", to: "rag" },
   { from: "portfolio", to: "agents" },
   { from: "portfolio", to: "stomp" },
   { from: "portfolio", to: "detection" },
 ];
 
-// Ambient packets — identifiers from each project README
+// Ambient packets — a true identifier fragment from each project
 const AMBIENT_PACKETS = [
-  { edge: 0, label: "order.created" },
-  { edge: 1, label: "inventory.reserved" },
+  { edge: 0, label: "SLOT_CONFLICT" },
+  { edge: 1, label: "order.created" },
   { edge: 2, label: "event: token" },
-  { edge: 3, label: "MESSAGE" },
-  { edge: 4, label: "frame 0412" },
+  { edge: 3, label: "ScoutAgent" },
+  { edge: 4, label: "MESSAGE" },
+  { edge: 5, label: "frame 0412" },
 ];
 
 interface HeroScreenProps {
@@ -139,7 +143,7 @@ export function HeroScreen({ opacity, edgesDrawn, onNodeClick }: HeroScreenProps
                 fontSize="9"
                 fontFamily="var(--font-plex-mono), monospace"
               >
-                {node.label.length > 16 ? node.label.slice(0, 14) + "…" : node.label}
+                {node.label.length > 20 ? node.label.slice(0, 18) + "…" : node.label}
               </text>
               {/* Invisible hit area for keyboard/click */}
               {node.slug && (

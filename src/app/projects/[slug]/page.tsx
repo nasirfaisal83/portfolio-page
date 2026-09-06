@@ -121,15 +121,22 @@ export default async function CaseStudyPage({ params }: Props) {
           <h2 id="source" className="type-h2 mb-4" style={{ maxWidth: "none" }}>
             Source
           </h2>
-          <a
-            href={project.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="type-body"
-            style={{ color: "var(--signal-deep)" }}
-          >
-            View {project.title} on GitHub →
-          </a>
+          {project.github ? (
+            <a
+              href={project.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="type-body"
+              style={{ color: "var(--signal-deep)" }}
+            >
+              View {project.title} on GitHub →
+            </a>
+          ) : (
+            <p className="type-body" style={{ color: "var(--graphite)" }}>
+              This was built for a client and the repository is private. Code and
+              architecture details are available on request.
+            </p>
+          )}
         </section>
 
         {/* Previous / Next */}

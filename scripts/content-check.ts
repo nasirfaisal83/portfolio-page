@@ -21,6 +21,7 @@ const contentDir = path.join(root, "src", "content");
 const resumePath = path.join(root, "public", "resume.pdf");
 
 const REQUIRED_SLUGS = new Set([
+  "salon-appointment-system",
   "order-saga",
   "rag-document-qa",
   "tech-news-agent",

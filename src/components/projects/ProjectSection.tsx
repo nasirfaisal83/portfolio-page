@@ -6,6 +6,10 @@ import type { Project } from "@/content/projects";
 
 // Lazy-load each screen — loaded only when section approaches viewport
 const SCREEN_MAP: Record<string, React.ComponentType> = {
+  salon: dynamic(() =>
+    import("@/components/screens/salon/SalonScreen").then((m) => ({ default: m.SalonScreen })),
+    { ssr: false }
+  ),
   "order-saga": dynamic(() =>
     import("@/components/screens/order-saga/OrderSagaScreen").then((m) => ({ default: m.OrderSagaScreen })),
     { ssr: false }
@@ -74,15 +78,21 @@ export function ProjectSection({ project }: ProjectSectionProps) {
           </p>
 
           <div className="flex flex-wrap gap-4">
-            <a
-              href={project.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="type-body no-underline"
-              style={{ color: "var(--signal-deep)" }}
-            >
-              View on GitHub
-            </a>
+            {project.github ? (
+              <a
+                href={project.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="type-body no-underline"
+                style={{ color: "var(--signal-deep)" }}
+              >
+                View on GitHub
+              </a>
+            ) : (
+              <span className="type-body" style={{ color: "var(--graphite)" }}>
+                Private repository
+              </span>
+            )}
             <Link
               href={`/projects/${project.slug}`}
               className="type-body no-underline"

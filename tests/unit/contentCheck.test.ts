@@ -1,6 +1,6 @@
 /**
  * tests/unit/contentCheck.test.ts
- * Verifies that the project slug set is exactly the required five,
+ * Verifies that the project slug set is exactly the required six,
  * and that content files import cleanly.
  * R15.2 / R15.3
  */
@@ -14,6 +14,7 @@ import { experience, about } from "@/content/experience";
 import { caseStudies } from "@/content/casestudy";
 
 const REQUIRED_SLUGS = new Set([
+  "salon-appointment-system",
   "order-saga",
   "rag-document-qa",
   "tech-news-agent",
@@ -22,21 +23,36 @@ const REQUIRED_SLUGS = new Set([
 ]);
 
 describe("projects.ts", () => {
-  it("exports exactly five projects", () => {
-    expect(projects).toHaveLength(5);
+  it("exports exactly six projects", () => {
+    expect(projects).toHaveLength(6);
   });
 
-  it("has exactly the required five slugs", () => {
+  it("has exactly the required six slugs", () => {
     const actual = new Set(projects.map((p) => p.slug));
     for (const slug of REQUIRED_SLUGS) expect(actual.has(slug)).toBe(true);
-    expect(actual.size).toBe(5);
+    expect(actual.size).toBe(6);
   });
 
-  it("every project has a non-empty summary, stack, and github", () => {
+  it("every project has a non-empty summary and stack", () => {
     for (const p of projects) {
       expect(p.summary.length).toBeGreaterThan(50);
       expect(p.stack.length).toBeGreaterThan(0);
-      expect(p.github).toMatch(/^https:\/\/github\.com\//);
+    }
+  });
+
+  it("every public repository URL points at GitHub", () => {
+    for (const p of projects) {
+      if (p.github) {
+        expect(p.github).toMatch(/^https:\/\/github\.com\//);
+      }
+    }
+  });
+
+  it("a project without a github URL is explicitly marked private", () => {
+    for (const p of projects) {
+      if (!p.github) {
+        expect(p.privateRepo).toBe(true);
+      }
     }
   });
 });
@@ -62,7 +78,7 @@ describe("seo.ts", () => {
     expect(seo.home.description.length).toBeLessThanOrEqual(160);
   });
 
-  it("all five project entries exist in seo.projects", () => {
+  it("all six project entries exist in seo.projects", () => {
     const slugs = Object.keys(seo.projects);
     for (const required of REQUIRED_SLUGS) expect(slugs).toContain(required);
   });
@@ -91,7 +107,7 @@ describe("experience.ts", () => {
 });
 
 describe("casestudy.ts", () => {
-  it("has prose for all five projects", () => {
+  it("has prose for all six projects", () => {
     for (const slug of REQUIRED_SLUGS) {
       expect(caseStudies[slug]).toBeDefined();
     }

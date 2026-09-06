@@ -127,20 +127,26 @@ export function buildProjectJsonLd(slug: ProjectSlug, project: Project) {
       ? projectSeo.programmingLanguage[0]
       : [...projectSeo.programmingLanguage];
 
-  return [
-    {
-      "@context": "https://schema.org",
-      "@type": "SoftwareSourceCode",
-      name: project.title,
-      description: project.summary,
-      codeRepository: project.github,
-      programmingLanguage,
-      author: {
-        "@type": "Person",
-        name: site.name,
-        url: absoluteUrl("/"),
-      },
+  // codeRepository is only emitted for public repositories — never a URL that
+  // would resolve to a login wall or a 404.
+  const softwareSourceCode: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareSourceCode",
+    name: project.title,
+    description: project.summary,
+    programmingLanguage,
+    author: {
+      "@type": "Person",
+      name: site.name,
+      url: absoluteUrl("/"),
     },
+  };
+  if (project.github) {
+    softwareSourceCode.codeRepository = project.github;
+  }
+
+  return [
+    softwareSourceCode,
     {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",

@@ -1,12 +1,15 @@
 // src/content/projects.ts
 // All factual project strings. No component may contain factual copy.
 
-export type ScreenId = "order-saga" | "rag" | "agents" | "stomp" | "detection";
+export type ScreenId = "salon" | "order-saga" | "rag" | "agents" | "stomp" | "detection";
 
 export interface Project {
   slug: string;
   title: string;
-  github: string;
+  /** Public repository URL. Omitted when the source is private. */
+  github?: string;
+  /** True when the repository is private and cannot be linked. */
+  privateRepo?: boolean;
   screen: ScreenId;
   summary: string;
   stack: string[];
@@ -14,6 +17,51 @@ export interface Project {
 }
 
 export const projects: Project[] = [
+  {
+    slug: "salon-appointment-system",
+    title: "Salon Appointment System",
+    screen: "salon",
+    privateRepo: true,
+    summary:
+      "Full-stack appointment booking and salon-management system, built solo for a real client and running in production. Customers book without creating an account: they pick services, a stylist and a time, then prove ownership of their phone number with a one-time code. Every booking arrives as a request that the assigned stylist approves or declines, and the system handles the messaging around that lifecycle — confirmations, declines, scheduled reminders, and a cryptographically signed link that lets a customer cancel or reschedule without ever logging in. Trilingual (Hebrew, Arabic, English) with full right-to-left support. Spring Boot 4.1, Java 21, PostgreSQL 16, Next.js 16, React 19, TypeScript.",
+    stack: [
+      "Spring Boot 4.1",
+      "Java 21",
+      "Spring Web MVC",
+      "Spring Data JPA",
+      "Spring Security",
+      "Bean Validation",
+      "PostgreSQL 16 (btree_gist)",
+      "Flyway",
+      "JWT (JJWT)",
+      "Next.js 16 (App Router)",
+      "React 19",
+      "TypeScript",
+      "next-intl",
+      "Cloudflare R2 (S3 API)",
+      "Thumbnailator",
+      "WebP ImageIO",
+      "JUnit 5",
+      "Mockito",
+      "AssertJ",
+      "Testcontainers",
+      "Docker",
+      "Docker Compose",
+      "GitHub Actions",
+    ],
+    highlights: [
+      "Preventing double-booking is a database guarantee, not application logic: a PostgreSQL GiST exclusion constraint over staff_id and the appointment time range, partial on active statuses, is what physically prevents overlaps. Service-layer availability checks are advisory only.",
+      "A booking is a request rather than an instant confirmation, because a stylist must retain the right to decline. That one product decision propagated into a seven-state machine, an expiry worker, a notification architecture, and the reschedule flow.",
+      "Rescheduling inserts a new request row that points at the original instead of mutating it, so the original keeps holding its slot until the replacement is approved. A customer can never end up with no appointment.",
+      "Duration and price are snapshotted onto appointment line items at booking time, after applying per-stylist overrides, so editing the catalogue later never rewrites historical revenue.",
+      "Three token types share one signing secret but carry a required purpose claim, so a staff session, a public manage link, and a remembered device can never be mistaken for one another. No password is stored anywhere in the system.",
+      "Approval authorization is ownership, not role: only the appointment's assigned stylist may approve, decline, mark paid or mark no-show. The owner sees every pending request salon-wide but has no override.",
+      "Availability is computed on demand from the working window minus time off minus busy appointments, with slot rounding done on local wall-clock minutes so slot times do not drift across a daylight-saving boundary.",
+      "12,224 lines of test code against 11,610 lines of production code. Four integration classes race two real threads against a real PostgreSQL, holding one transaction open so the second thread genuinely reaches the constraint.",
+      "Notifications carry a template identifier plus ordered parameters rather than rendered strings, which is what WhatsApp Business templates require. The abstraction was validated mid-project when the SMS vendor changed and only a new sender implementation was needed.",
+      "Gallery uploads are identified by magic bytes rather than filename, then decoded and re-encoded to WebP, which strips EXIF location data as a side effect of the resize rather than as a separate step that could be forgotten.",
+    ],
+  },
   {
     slug: "order-saga",
     title: "Order-Saga",

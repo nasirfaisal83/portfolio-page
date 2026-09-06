@@ -10,6 +10,37 @@ export interface CaseStudy {
 }
 
 export const caseStudies: Record<string, CaseStudy> = {
+  "salon-appointment-system": {
+    whatItDoes: `A salon taking bookings by phone call and messaging app has three problems at once: every request interrupts someone mid-appointment, availability lives in one person's head so double-bookings happen, and there is no reporting beyond a cash drawer. This system replaces that. It was built solo for a real client and runs in production, serving three audiences from one codebase — a public customer site, a stylist dashboard, and an owner dashboard with catalogue management and revenue reporting. Customers never create an account. They pick services, choose a stylist or leave it open, select a time, and prove ownership of their phone number with a one-time code. Everything after that is handled by the system: notifying the right stylist, sending confirmations and reminders, and issuing a signed link that lets the customer cancel or reschedule without logging in. The interface is trilingual — Hebrew, Arabic and English — with full right-to-left layout.`,
+    howItWorks: [
+      {
+        heading: "Why a booking is a request, not a confirmation",
+        body: `The obvious design is instant confirmation: the customer picks a slot, the slot is taken, done. This system deliberately does not do that, because a stylist needs the right to decline — a customer with a history of no-shows, a service that needs an in-person consultation first, a slot being held for a regular. So a booking arrives as a request and confirmation is a human decision. That single choice propagated through the whole architecture. The appointment needs a seven-state machine rather than a boolean. Unactioned requests must expire automatically or they hold slots forever, which means a background worker. The database has to treat pending and confirmed appointments identically when preventing overlaps, otherwise two pending requests could both be approved onto the same slot. Every state change needs an outbound message, because the customer is not sitting watching a screen. Most of the interesting engineering in the project follows from that one product decision.`,
+      },
+      {
+        heading: "How two customers cannot take the same slot",
+        body: `Two people tapping the same slot within milliseconds is not an edge case for a booking system; at peak it is the normal case. The availability check in the service layer cannot solve it, because both requests can pass their check before either commits. So that check is treated as advisory — its job is to produce a friendly error message in the common case, not to be correct under load. The actual guarantee is a PostgreSQL exclusion constraint over the stylist and the appointment's time range, and it physically cannot admit two overlapping active appointments for one stylist. Three details in it are deliberate. The btree_gist extension is required because a GiST index handles ranges natively but not scalar equality on a UUID column, so the extension supplies the operator class that lets both predicates share one index. The range is end-exclusive, so an appointment finishing at 14:00 and one starting at 14:00 do not collide and back-to-back booking works. And the constraint is partial, applying only to pending and confirmed rows, so cancellation history never blocks a re-book while a pending request still holds its slot. When the constraint fires, only that specific SQLSTATE is translated into a slot-conflict response; a unique-violation on the customer row would otherwise be mislabelled as "this time was just taken" and send the user off to re-pick a slot that was never the problem.`,
+      },
+      {
+        heading: "How rescheduling never loses the original slot",
+        body: `Rescheduling is where the request-based model gets interesting. Because a new time also needs approval, simply moving the appointment would release the original slot into a window where the new time might be declined — leaving the customer with nothing. Instead, a reschedule inserts a new appointment row in the requested state that points back at the original. The original is not touched: still confirmed, still holding its slot, still carrying its reminders. When the assigned stylist approves the replacement, the original is cancelled silently in the same operation. If nobody ever approves it, the replacement simply expires and the original booking stands. The customer cannot end up with no appointment because they tried to move one, which is exactly the failure a naive row update would risk.`,
+      },
+      {
+        heading: "Why prices are frozen at booking time",
+        body: `If reports read the live service catalogue, raising a price rewrites history — every past revenue figure silently changes. So each appointment's line items snapshot the duration and price at the moment of booking, after any per-stylist override has been applied. Prices are stored as a minimum and maximum pair rather than a nullable single value: equal for fixed-price services, genuinely different for ranged ones, which means a multi-service total is always computable and never collapses to null. Attributing one cash payment across several services then uses a pro-rata split where the last line absorbs the rounding remainder, so the parts always sum exactly to the amount paid. A report whose parts do not add up to the whole is one the owner stops trusting entirely.`,
+      },
+    ],
+    designDecisions: [
+      "A database exclusion constraint prevents overlaps rather than application-level locking or checks, so correctness cannot be bypassed by a future code path and holds under genuine concurrency.",
+      "Bookings are requests rather than instant confirmations, matching the client's actual workflow where stylists must be able to decline.",
+      "Identity is a phone number with no accounts and no passwords, which removes the largest drop-off point in salon booking and leaves no password store to breach.",
+      "Flyway owns the schema and Hibernate runs in validate mode, never generating DDL, so schema history is reviewable and ordered and production DDL is never inferred.",
+      "Messages are a template identifier plus ordered parameters rather than rendered strings, which keeps a WhatsApp Business migration a configuration change rather than a rewrite.",
+      "Availability is computed on demand instead of materialised into a slots table, so there is nothing to keep in sync or backfill and settings changes take effect immediately.",
+      "A dual-write window in reminder dispatch is documented and accepted rather than papered over with partial bookkeeping; the failure mode is a duplicate reminder, not a lost appointment.",
+    ],
+  },
+
   "order-saga": {
     whatItDoes: `Order-Saga is an order-processing system split across five independent microservices — order, inventory, payment, shipping, and notification — that coordinate entirely through events on a Kafka bus. There is no central orchestrator telling each service what to do. Instead, each service reacts to the events it cares about and publishes its own result event, building a saga that either reaches a COMPLETED state or unwinds itself through automatic compensation when something fails.`,
     howItWorks: [
